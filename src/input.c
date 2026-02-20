@@ -113,7 +113,7 @@ void handle_single_key(Player *player, int key)
     case 'q':
     case 'Q':
         ui_clear();
-        printf("Exiting WalCman...\n");
+        printf("Exiting walcman...\n");
         exit(0);
     case 'h':
     case 'H':
@@ -126,7 +126,7 @@ void handle_single_key(Player *player, int key)
 void enter_file_input_mode(Player *player)
 {
     ui_clear();
-    printf("WalCman v1.0.0\n");
+    printf("walcman v1.0.0\n");
     printf("-------------------------------\n\n");
     printf("Enter file path: ");
     fflush(stdout);

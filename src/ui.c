@@ -3,6 +3,10 @@
 #include "ui.h"
 #include "player.h"
 
+#ifndef VERSION
+#define VERSION "unknown"
+#endif
+
 void ui_clear(void)
 {
     printf("\033[2J\033[H");
@@ -11,7 +15,7 @@ void ui_clear(void)
 
 void print_help(void)
 {
-    printf("WalCman v1.0.0 - Terminal Music Player\n\n");
+    printf("walcman v" VERSION " - Terminal Music Player\n\n");
     printf("Commands:\n");
     printf("  p         - Play file\n");
     printf("  [space]   - Play/Pause\n");
@@ -25,7 +29,7 @@ void print_help(void)
 void ui_show_status(Player *player)
 {
     ui_clear();
-    printf("WalCman v1.0.0\n");
+    printf("walcman v" VERSION "\n");
     printf("-------------------------------\n\n");
 
     if (player->is_playing)
@@ -57,7 +61,7 @@ void ui_show_status(Player *player)
 void ui_show_loading(const char *filepath)
 {
     ui_clear();
-    printf("WalCman v1.0.0\n");
+    printf("walcman v" VERSION "\n");
     printf("-------------------------------\n\n");
     printf("Loading: %s\n\n", filepath);
     fflush(stdout);

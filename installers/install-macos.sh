@@ -18,6 +18,8 @@ ALIAS_NAME="walcman"
 
 # Get the directory where the install script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Get the project root directory (parent of installers/)
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "  walcman installer"
@@ -25,13 +27,13 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 
 # Check if VERSION file exists
-if [ ! -f "$SCRIPT_DIR/VERSION" ]; then
+if [ ! -f "$PROJECT_ROOT/VERSION" ]; then
     echo -e "${RED}Error: VERSION file not found${NC}"
     exit 1
 fi
 
 # Read current version
-CURRENT_VERSION=$(cat "$SCRIPT_DIR/VERSION" | tr -d '\n')
+CURRENT_VERSION=$(cat "$PROJECT_ROOT/VERSION" | tr -d '\n')
 echo "Installing version: $CURRENT_VERSION"
 echo ""
 
@@ -50,11 +52,11 @@ fi
 
 # Build the project
 echo "Building walcman..."
-cd "$SCRIPT_DIR"
+cd "$PROJECT_ROOT"
 make clean > /dev/null 2>&1 || true
 make
 
-if [ ! -f "$SCRIPT_DIR/build/walcman" ]; then
+if [ ! -f "$PROJECT_ROOT/build/walcman" ]; then
     echo -e "${RED}Error: Build failed. walcman binary not found${NC}"
     exit 1
 fi
@@ -67,8 +69,8 @@ echo "Installing to $INSTALL_DIR..."
 mkdir -p "$INSTALL_DIR"
 
 # Copy files
-cp "$SCRIPT_DIR/build/walcman" "$INSTALL_DIR/"
-cp "$SCRIPT_DIR/VERSION" "$INSTALL_DIR/"
+cp "$PROJECT_ROOT/build/walcman" "$INSTALL_DIR/"
+cp "$PROJECT_ROOT/VERSION" "$INSTALL_DIR/"
 
 # Make binary executable
 chmod +x "$INSTALL_DIR/walcman"

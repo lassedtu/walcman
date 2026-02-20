@@ -4,7 +4,7 @@ A lightweight music and audio player that lives in your terminal. Built with C a
 
 ## Features
 
-### Current (v1.1.0)
+### Current (v1.1.1)
 - Play audio files (MP3, WAV, FLAC, M4A, OGG, AAC, WMA)
 - Pause and resume playback
 - Stop playback

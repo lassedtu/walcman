@@ -2,6 +2,10 @@ CC = clang
 CFLAGS = -Wall -Wextra -std=c99 -O2
 LDFLAGS = -lm
 
+# Read version from VERSION file
+VERSION := $(shell cat VERSION 2>/dev/null || echo "unknown")
+CFLAGS += -DVERSION=\"$(VERSION)\"
+
 # Platform detection
 UNAME := $(shell uname)
 ifeq ($(UNAME), Darwin)
