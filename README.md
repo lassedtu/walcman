@@ -2,11 +2,9 @@
 
 A lightweight music and audio player that lives in your terminal. Built with C and miniaudio for minimal resource consumption and maximum performance.
 
-> **Note:** v1.1.0 will include an installer that sets up `walcman` as a terminal command. For now, you'll need to run the binary directly from the build directory.
-
 ## Features
 
-### Current (v1.0.0)
+### Current (v1.1.0)
 - Play audio files (MP3, WAV, FLAC, M4A, OGG, AAC, WMA)
 - Pause and resume playback
 - Stop playback
@@ -14,9 +12,10 @@ A lightweight music and audio player that lives in your terminal. Built with C a
 - Command-line file argument support
 - Automatic detection when song ends
 - Clean terminal UI with status display
+- **Automated installer with version management (macOS)**
 
-### Planned (v1.1.0+)
-- Installer with terminal alias setup
+### Planned (v1.2.0+)
+- Universal installer support (Linux, Windows)
 - Drag-and-drop file support
 - Progress bar with time display
 - Shuffle playback
@@ -35,13 +34,15 @@ walcman is built for users who want a music player that:
 
 ## Platform Support
 
-| Platform | Status | Notes |
-|----------|--------|-------|
-| macOS    | Working | v1.0.0 fully tested on macOS 10.13+ |
-| Linux    | Untested | Core libraries compatible, needs testing |
-| Windows  | Untested | Core libraries compatible, needs testing |
+| Platform | Playback | Installer | Notes |
+|----------|----------|-----------|-------|
+| macOS    | Working | Available | Fully tested on macOS 10.13+ |
+| Linux    | Experimental | Coming Soon | Core libraries compatible, needs testing |
+| Windows  | Experimental | Coming Soon | Core libraries compatible, needs testing |
 
 The Makefile includes platform detection and appropriate linker flags for all three platforms.
+
+> **Note:** Universal installer support is planned for v1.2.0. Currently, Linux and Windows users should use manual build.
 
 ## Installation
 
@@ -51,7 +52,55 @@ The Makefile includes platform detection and appropriate linker flags for all th
 
 All dependencies (miniaudio) are bundled with the source.
 
-### Build from Source
+### Automated Install (macOS Only)
+
+> **macOS users:** Automated installer with version management is available!
+
+1. Clone the repository:
+```bash
+git clone https://github.com/lassedtu/walcman.git
+cd walcman
+```
+
+2. Run the installer:
+```bash
+make install
+```
+
+The installer will:
+- Build the project
+- Install walcman to `~/.config/walcman`
+- Add a shell alias to `~/.zshrc`
+- Check for existing installations and handle upgrades
+
+3. Restart your terminal or run:
+```bash
+source ~/.zshrc
+```
+
+4. You can now use walcman from anywhere:
+```bash
+walcman /path/to/song.mp3
+```
+
+#### Uninstall (macOS)
+
+To remove walcman:
+```bash
+make uninstall
+```
+
+#### Upgrading (macOS)
+
+To upgrade to a new version:
+1. Pull the latest changes: `git pull`
+2. Run the installer again: `make install`
+
+The installer automatically detects existing installations and handles upgrades.
+
+### Manual Build (All Platforms)
+
+> **Linux & Windows users:** Use manual build until automated installers are released.
 
 1. Clone the repository:
 ```bash
@@ -69,30 +118,22 @@ make
 ./build/walcman
 ```
 
-Or build and run in one command:
-```bash
-make run
-```
-
 ### Starting the Player
 
+**With automated installer (macOS):**
+```bash
+walcman                           # Interactive mode
+walcman /path/to/song.mp3         # Direct playback
+```
+
+**With manual build (All platforms):**
+```bash
+./build/walcman                   # Interactive mode
+./build/walcman /path/to/song.mp3 # Direct playback
+```
+
 **Interactive mode:**
-```bash
-./build/walcman
-```
-Then press `p` to select a file to play.
-
-**Direct playback:**
-```bash
-./build/walcman /path/to/your/song.mp3
-```
-
-### Future Versions
-
-**v1.1.0** will include an installer script that:
-- Installs the binary to your system
-- Creates a terminal alias (`walcman`)
-- Allows you to run the player from anywhere with just `walcman`
+Press `p` to select a file to play.
 
 ## Usage
 
@@ -191,8 +232,7 @@ Contributions are welcome! Here's how you can help:
 
 ### Current Development Focus
 
-- **v1.1.0**: Installer script with terminal alias setup
-- Drag-and-drop file support
+- **v1.2.0**: Drag-and-drop file support
 - Progress bar with time tracking
 - Platform testing (Linux and Windows)
 - Enhanced UI features
@@ -200,7 +240,7 @@ Contributions are welcome! Here's how you can help:
 
 ## Project Status
 
-- **Current Version**: v1.0.0
+- **Current Version**: v1.1.0
 - **Status**: Active Development
 - **Roadmap**: See [ROADMAP.md](ROADMAP.md) (coming soon)
 

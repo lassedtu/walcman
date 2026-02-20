@@ -1,0 +1,18 @@
+#!/bin/bash
+
+echo ""
+echo "========================================"
+echo "  walcman installer"
+echo "========================================"
+echo ""
+echo "Linux support is currently experimental."
+echo ""
+echo "The automated installer is not yet available for Linux."
+echo "Universal installer support is coming in a future release."
+echo ""
+echo "To use walcman on Linux:"
+echo "  1. Build manually: make"
+echo "  2. Run: ./build/walcman"
+echo ""
+echo "For more information, see the README.md"
+echo ""

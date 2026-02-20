@@ -38,4 +38,30 @@ clean:
 run: $(BIN)
 	./$(BIN)
 
-.PHONY: all clean run
+install:
+ifeq ($(UNAME), Darwin)
+	@chmod +x installers/install-macos.sh
+	@./installers/install-macos.sh
+else ifeq ($(UNAME), Linux)
+	@chmod +x installers/install-linux.sh
+	@./installers/install-linux.sh
+else
+	@echo "Error: Installer not available for $(UNAME)"
+	@echo "Supported platforms: macOS (Darwin), Linux"
+	@exit 1
+endif
+
+uninstall:
+ifeq ($(UNAME), Darwin)
+	@chmod +x installers/uninstall-macos.sh
+	@./installers/uninstall-macos.sh
+else ifeq ($(UNAME), Linux)
+	@chmod +x installers/uninstall-linux.sh
+	@./installers/uninstall-linux.sh
+else
+	@echo "Error: Uninstaller not available for $(UNAME)"
+	@echo "Supported platforms: macOS (Darwin), Linux"
+	@exit 1
+endif
+
+.PHONY: all clean run install uninstall
