@@ -15,22 +15,20 @@ A lightweight music and audio player that lives in your terminal. Built with C a
 - **Automated installer with version management (macOS)**
 
 ### Planned (v1.2.0+)
-- Universal installer support (Linux, Windows)
-- Drag-and-drop file support
 - Progress bar with time display
-- Shuffle playback
-- EQ presets (load and create custom)
-- Repeat modes
 - Volume control
-- Playlist management
-- In-player file browser
+- Shuffle playback
+- Repeat mode
+- Playlist management + In-player file/directory browser
+- EQ presets (load and create custom)
+- Universal installer support (Linux, Windows)
 
 ## Why walcman?
 
 walcman is built for users who want a music player that:
 - Stays out of your way (runs in the terminal)
 - Uses minimal system resources (powered by miniaudio and C)
-- Gets the job done without bloat
+- Just works, without bloat
 
 ## Platform Support
 
@@ -139,7 +137,7 @@ Press `p` to select a file to play.
 
 ### Keyboard Controls
 
-walcman uses single-key input - just press the key, no need to hit Enter!
+walcman uses single-key input - just press the key, no need to hit Enter.
 
 | Key | Action |
 |-----|--------|
@@ -148,29 +146,6 @@ walcman uses single-key input - just press the key, no need to hit Enter!
 | **s** | Stop playback |
 | **h** | Show help |
 | **q** | Quit |
-
-### Example Session
-
-1. Start walcman:
-```bash
-./build/walcman
-```
-
-2. Press `p` to play a file, then type or paste the file path:
-```
-/Users/username/Music/song.mp3
-```
-
-3. Press `Space` to pause, `Space` again to resume
-
-4. Press `s` to stop, or `q` to quit
-
-### Playing from Command Line
-
-You can also pass a file directly when starting:
-```bash
-./build/walcman ~/Music/favorite-song.mp3
-```
 
 The player will start immediately and display playback controls.
 
@@ -230,19 +205,10 @@ Contributions are welcome! Here's how you can help:
 5. Push to the branch (`git push origin feature/amazing-feature`)
 6. Open a Pull Request
 
-### Current Development Focus
-
-- **v1.2.0**: Drag-and-drop file support
-- Progress bar with time tracking
-- Platform testing (Linux and Windows)
-- Enhanced UI features
-- Playlist management system
-
 ## Project Status
 
-- **Current Version**: v1.1.0
+- **Current Version**: v1.1.1
 - **Status**: Active Development
-- **Roadmap**: See [ROADMAP.md](ROADMAP.md) (coming soon)
 
 ## Acknowledgments
 
