@@ -1,3 +1,9 @@
+/**
+ * util.c - General utility functions
+ *
+ * Miscellaneous helper functions used across the application.
+ */
+
 #include <string.h>
 #include "util.h"
 

@@ -1,14 +1,24 @@
+/**
+ * terminal.c - Low-level terminal I/O implementation
+ *
+ * Manages terminal modes using POSIX termios for raw input.
+ * Raw mode allows single key press detection without Enter,
+ * essential for interactive controls.
+ *
+ * Always restore normal mode on exit to prevent terminal corruption.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <termios.h>
 #include "terminal.h"
 
+// Store original terminal settings for restoration
 static struct termios original_termios;
 
 void terminal_raw_mode(void)
 {
-    // Get current terminal settings
     if (tcgetattr(STDIN_FILENO, &original_termios) == -1)
     {
         perror("tcgetattr");
@@ -23,7 +33,6 @@ void terminal_raw_mode(void)
     raw.c_cc[VMIN] = 0;  // Non-blocking read
     raw.c_cc[VTIME] = 0; // No timeout
 
-    // Apply raw mode
     if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1)
     {
         perror("tcsetattr");
@@ -33,7 +42,6 @@ void terminal_raw_mode(void)
 
 void terminal_normal_mode(void)
 {
-    // Restore original terminal settings
     if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &original_termios) == -1)
     {
         perror("tcsetattr");
@@ -41,7 +49,7 @@ void terminal_normal_mode(void)
     }
 }
 
-int terminal_getchar(void)
+int terminal_read_char(void)
 {
     unsigned char c;
     ssize_t nread = read(STDIN_FILENO, &c, 1);
@@ -51,14 +59,14 @@ int terminal_getchar(void)
     }
     return -1; // No character available
 }
-// Read a full line in raw mode (for file paths)
-int terminal_readline(char *buffer, int max_len)
+
+int terminal_read_line(char *buffer, int max_len)
 {
     int pos = 0;
 
     while (pos < max_len - 1)
     {
-        int ch = terminal_getchar();
+        int ch = terminal_read_char();
 
         if (ch == -1)
         {

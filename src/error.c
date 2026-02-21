@@ -1,3 +1,10 @@
+/**
+ * error.c - Error handling implementation
+ *
+ * Provides centralized error messages and printing.
+ * Maps error codes to user-friendly messages.
+ */
+
 #include <stdio.h>
 #include "error.h"
 

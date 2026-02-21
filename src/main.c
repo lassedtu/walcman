@@ -1,14 +1,35 @@
+/**
+ * main.c - Application entry point and main event loop
+ *
+ * This is the core orchestrator for walcman. It handles:
+ * - Initialization of player and UI systems
+ * - Command-line argument processing (direct file playback)
+ * - Interactive mode with welcome screen
+ * - Main event loop with input polling and song end detection
+ * - Clean shutdown and resource cleanup
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include "player.h"
-#include "ui.h"
+#include "ui_core.h"
+#include "ui_screens.h"
 #include "input.h"
 #include "util.h"
 #include "error.h"
 #include "terminal.h"
 
+#define INPUT_POLL_INTERVAL_US 50000 // Poll for input every 50ms
+
+/**
+ * Application entry point
+ *
+ * Supports two modes:
+ * 1. Direct playback: walcman <filepath> - plays file immediately
+ * 2. Interactive: walcman - shows welcome screen, wait for commands
+ */
 int main(int argc, char *argv[])
 {
     Player *player = player_create();
@@ -18,31 +39,43 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    UIBuffer *ui_buf = ui_buffer_create();
+    if (!ui_buf)
+    {
+        error_print(ERR_PLAYER_INIT, "Could not initialize UI");
+        player_destroy(player);
+        return 1;
+    }
+
+    int running = 1;
+
     // If file path provided as argument, play it immediately
     if (argc > 1)
     {
         const char *filepath = argv[1];
         strip_quotes((char *)filepath);
-        ui_show_loading(filepath);
+
+        ui_screen_loading(ui_buf, filepath);
+        ui_buffer_render(ui_buf);
+
         if (player_play(player, filepath) == 0)
         {
-            ui_show_status(player);
+            ui_screen_playing(ui_buf, player);
+            ui_buffer_render(ui_buf);
+
             terminal_raw_mode();
 
-            while (1)
+            while (running)
             {
-                int ch = terminal_getchar();
+                int ch = terminal_read_char();
                 if (ch != -1)
                 {
-                    handle_single_key(player, ch);
-                    if (ch != 'h' && ch != 'H' && ch != 'p' && ch != 'P')
-                    {
-                        fflush(stdout);
-                    }
+                    InputAction action = input_map_key(ch);
+                    running = input_handle_action(player, action, ui_buf);
                 }
                 else
                 {
-                    usleep(50000);
+                    usleep(INPUT_POLL_INTERVAL_US);
                 }
             }
 
@@ -51,40 +84,51 @@ int main(int argc, char *argv[])
         else
         {
             error_print(ERR_FILE_LOAD, filepath);
+            ui_buffer_destroy(ui_buf);
             player_destroy(player);
             return 1;
         }
 
+        ui_clear_screen();
+        printf("Exiting walcman...\n");
+        ui_buffer_destroy(ui_buf);
         player_destroy(player);
         return 0;
     }
 
     // Interactive mode
-    ui_clear();
-    print_help();
+    ui_screen_welcome(ui_buf);
+    ui_buffer_render(ui_buf);
 
     terminal_raw_mode();
 
-    while (1)
+    while (running)
     {
-        int ch = terminal_getchar();
+        int ch = terminal_read_char();
         if (ch != -1)
         {
-            handle_single_key(player, ch);
+            InputAction action = input_map_key(ch);
+            running = input_handle_action(player, action, ui_buf);
         }
         else
         {
             // Check if song has ended
-            if (player->is_playing && !player->is_paused && player_is_at_end(player))
+            PlayerState state = player_get_state(player);
+            if (state == STATE_PLAYING && player_has_finished(player))
             {
                 player_stop(player);
-                ui_show_status(player);
+                ui_screen_playing(ui_buf, player);
+                ui_buffer_render(ui_buf);
             }
-            usleep(50000);  // Sleep 50ms to avoid busy waiting
+            usleep(INPUT_POLL_INTERVAL_US);
         }
     }
 
     terminal_normal_mode();
+    ui_clear_screen();
+    printf("Exiting walcman...\n");
+
+    ui_buffer_destroy(ui_buf);
     player_destroy(player);
 
     return 0;
