@@ -78,6 +78,20 @@ chmod +x "$INSTALL_DIR/walcman"
 echo -e "${GREEN}✓ Files installed${NC}"
 echo ""
 
+# Create config file with defaults if it doesn't exist
+CONFIG_FILE="$INSTALL_DIR/config"
+if [ ! -f "$CONFIG_FILE" ]; then
+    cat > "$CONFIG_FILE" << 'CONFIG_EOF'
+# walcman configuration
+update_check_enabled=1
+check_interval_hours=24
+CONFIG_EOF
+    echo -e "${GREEN}✓ Config file created${NC}"
+else
+    echo -e "${GREEN}✓ Config file exists${NC}"
+fi
+echo ""
+
 # Setup shell alias
 echo "Configuring shell alias..."
 

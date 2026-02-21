@@ -20,6 +20,7 @@
 #include "util.h"
 #include "error.h"
 #include "terminal.h"
+#include "update.h"
 
 #define INPUT_POLL_INTERVAL_US 50000 // Poll for input every 50ms
 
@@ -32,6 +33,9 @@
  */
 int main(int argc, char *argv[])
 {
+    // Check for updates in background (silent, non-blocking)
+    update_check_background();
+
     Player *player = player_create();
     if (!player)
     {

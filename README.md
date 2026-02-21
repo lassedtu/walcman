@@ -4,24 +4,21 @@ A lightweight music and audio player that lives in your terminal. Built with C a
 
 ## Features
 
-### Current (v1.1.4)
+### Current (v1.2.0)
 - Play audio files (MP3, WAV, FLAC, M4A, OGG, AAC, WMA)
-- Pause and resume playback
-- Stop playback
 - Single-key controls (no need to press Enter)
 - Command-line file argument support
 - Automatic detection when song ends
-- Clean terminal UI with status display
-- **Automated installer with version management (macOS)**
+- Automated installer with version management (macOS)
+- **Auto-update check on startup (non-blocking, silent)**
 
 ### Planned
 - Progress bar with time display
-- Repeat mode
 - Volume control
 - Shuffle playback
-- Playlist management + In-player file/directory browser
+- Playlist management
+- In-player file/directory browser
 - EQ presets (load and create custom)
-- Automatic updater: Check for new versions and update on startup
 - Universal installer support (Linux, Windows)
 
 ## Why walcman?
@@ -133,6 +130,54 @@ walcman /path/to/song.mp3         # Direct playback
 
 **Interactive mode:**
 Press `p` to select a file to play.
+
+## Configuration
+
+### Config File Location
+
+On macOS (with automated installer), the config file is located at:
+```
+~/.config/walcman/config
+```
+
+The config file is created automatically during installation with default settings.
+
+### Available Options
+
+```bash
+# Enable/disable automatic update checks on startup
+update_check_enabled=1
+
+# How often to check for updates (in hours)
+check_interval_hours=24
+```
+
+### Modifying Configuration
+
+Edit the config file directly with your preferred text editor:
+
+```bash
+vim ~/.config/walcman/config
+```
+
+Then modify the values:
+
+- **`update_check_enabled`**: Set to `1` to enable auto-update checks, `0` to disable
+- **`check_interval_hours`**: Number of hours between update checks
+
+For example, to check for updates every 12 hours:
+```bash
+check_interval_hours=12
+```
+
+### Auto-Update Behavior
+
+When `update_check_enabled=1`:
+- walcman checks for new versions on startup (non-blocking, runs in background)
+- If an update is available, it downloads and installs automatically
+- No interruption to startup - the check happens in parallel
+- If the check fails (no internet, GitHub down, etc.), walcman starts normally without errors
+- Updates are atomic with rollback capability
 
 ## Usage
 
