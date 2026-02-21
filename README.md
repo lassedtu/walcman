@@ -4,7 +4,7 @@ A lightweight music and audio player that lives in your terminal. Built with C a
 
 ## Features
 
-### Current (v1.1.2)
+### Current (v1.1.3)
 - Play audio files (MP3, WAV, FLAC, M4A, OGG, AAC, WMA)
 - Pause and resume playback
 - Stop playback
@@ -21,6 +21,7 @@ A lightweight music and audio player that lives in your terminal. Built with C a
 - Shuffle playback
 - Playlist management + In-player file/directory browser
 - EQ presets (load and create custom)
+- Automatic updater: Check for new versions and update on startup
 - Universal installer support (Linux, Windows)
 
 ## Why walcman?

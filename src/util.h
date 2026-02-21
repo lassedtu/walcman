@@ -14,4 +14,11 @@
  */
 void strip_quotes(char *str);
 
+/**
+ * Remove shell escape characters from a path (in-place)
+ * Converts "money\ pinkfloyd.mp3" to "money pinkfloyd.mp3"
+ * str: String to modify
+ */
+void unescape_path(char *str);
+
 #endif // WALCMAN_UTIL_H

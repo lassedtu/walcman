@@ -63,6 +63,7 @@ static void prompt_for_file(Player *player, UIBuffer *ui_buf)
     if (len > 0)
     {
         strip_quotes(filepath);
+        unescape_path(filepath);
         ui_screen_loading(ui_buf, filepath);
         ui_buffer_render(ui_buf);
 

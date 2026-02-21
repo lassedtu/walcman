@@ -83,20 +83,10 @@ void ui_screen_playing(UIBuffer *buf, Player *player)
 
         ui_buffer_append(buf, "\n");
 
-        // TODO: Show file info (disabled for now)
-        // const char *current_file = player_get_current_file(player);
-        // ui_component_file_info(buf, current_file);
-        // ui_buffer_append(buf, "\n");
-
-        // TODO: Show progress bar and time (disabled for now)
-        // float position = player_get_position(player);
-        // float duration = player_get_duration(player);
-        // if (duration > 0.0f)
-        // {
-        //     ui_component_progress_bar(buf, position / duration, 40);
-        //     ui_component_time_display(buf, position, duration);
-        // }
-        // ui_buffer_append(buf, "\n");
+        // Show currently playing file
+        const char *current_file = player_get_current_file(player);
+        ui_component_file_info(buf, current_file);
+        ui_buffer_append(buf, "\n");
 
         // Show controls
         ui_component_key_hints_section(buf, "Controls");
