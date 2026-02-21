@@ -12,24 +12,20 @@
 #ifndef WALCMAN_INPUT_H
 #define WALCMAN_INPUT_H
 
-// Forward declarations
-#ifndef WALCMAN_PLAYER_H
-typedef struct Player Player;
-#endif
-
-#ifndef WALCMAN_UI_CORE_H
-typedef struct UIBuffer UIBuffer;
-#endif
+#include "player.h"
+#include "ui_core.h"
 
 // Action codes returned by input handlers
 typedef enum
 {
-    INPUT_ACTION_NONE = 0,     // No action needed (unrecognized key)
-    INPUT_ACTION_QUIT,         // Exit program
-    INPUT_ACTION_TOGGLE_PAUSE, // Toggle play/pause state
-    INPUT_ACTION_STOP,         // Stop playback completely
-    INPUT_ACTION_SHOW_HELP,    // Display help screen
-    INPUT_ACTION_PROMPT_FILE   // Prompt user for file path to play
+    INPUT_ACTION_NONE = 0,        // No action needed (unrecognized key)
+    INPUT_ACTION_QUIT,            // Exit program
+    INPUT_ACTION_TOGGLE_PAUSE,    // Toggle play/pause state
+    INPUT_ACTION_STOP,            // Stop playback completely
+    INPUT_ACTION_SHOW_HELP,       // Display help screen
+    INPUT_ACTION_PROMPT_FILE,     // Prompt user for file path to play
+    INPUT_ACTION_TOGGLE_CONTROLS, // Toggle controls visibility
+    INPUT_ACTION_TOGGLE_LOOP      // Toggle audio looping
 } InputAction;
 
 /**
@@ -44,8 +40,9 @@ InputAction input_map_key(int ch);
  * player: Player instance to control
  * action: Action to execute
  * ui_buf: UI buffer for rendering
+ * show_controls: Pointer to controls visibility flag (can be modified)
  * Returns: 1 if program should continue, 0 if should exit
  */
-int input_handle_action(Player *player, InputAction action, UIBuffer *ui_buf);
+int input_handle_action(Player *player, InputAction action, UIBuffer *ui_buf, int *show_controls);
 
 #endif // WALCMAN_INPUT_H

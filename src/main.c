@@ -48,6 +48,7 @@ int main(int argc, char *argv[])
     }
 
     int running = 1;
+    int show_controls = 0; // Controls hidden by default
 
     // If file path provided as argument, play it immediately
     if (argc > 1)
@@ -60,7 +61,7 @@ int main(int argc, char *argv[])
 
         if (player_play(player, filepath) == 0)
         {
-            ui_screen_playing(ui_buf, player);
+            ui_screen_playing(ui_buf, player, show_controls);
             ui_buffer_render(ui_buf);
 
             terminal_raw_mode();
@@ -71,7 +72,7 @@ int main(int argc, char *argv[])
                 if (ch != -1)
                 {
                     InputAction action = input_map_key(ch);
-                    running = input_handle_action(player, action, ui_buf);
+                    running = input_handle_action(player, action, ui_buf, &show_controls);
                 }
                 else
                 {
@@ -97,7 +98,7 @@ int main(int argc, char *argv[])
     }
 
     // Interactive mode
-    ui_screen_welcome(ui_buf);
+    ui_screen_welcome(ui_buf, show_controls);
     ui_buffer_render(ui_buf);
 
     terminal_raw_mode();
@@ -108,7 +109,7 @@ int main(int argc, char *argv[])
         if (ch != -1)
         {
             InputAction action = input_map_key(ch);
-            running = input_handle_action(player, action, ui_buf);
+            running = input_handle_action(player, action, ui_buf, &show_controls);
         }
         else
         {
@@ -117,7 +118,7 @@ int main(int argc, char *argv[])
             if (state == STATE_PLAYING && player_has_finished(player))
             {
                 player_stop(player);
-                ui_screen_playing(ui_buf, player);
+                ui_screen_playing(ui_buf, player, show_controls);
                 ui_buffer_render(ui_buf);
             }
             usleep(INPUT_POLL_INTERVAL_US);

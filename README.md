@@ -4,7 +4,7 @@ A lightweight music and audio player that lives in your terminal. Built with C a
 
 ## Features
 
-### Current (v1.1.3)
+### Current (v1.1.4)
 - Play audio files (MP3, WAV, FLAC, M4A, OGG, AAC, WMA)
 - Pause and resume playback
 - Stop playback
@@ -41,7 +41,7 @@ walcman is built for users who want a music player that:
 
 The Makefile includes platform detection and appropriate linker flags for all three platforms.
 
-> **Note:** Universal installer support is planned for v1.2.0. Currently, Linux and Windows users should use manual build.
+> **Note:** Universal installer support is planned in the future. Currently, Linux and Windows users should use manual build.
 
 ## Installation
 
@@ -146,6 +146,8 @@ walcman uses single-key input - just press the key, no need to hit Enter.
 | **Space** | Pause/Resume playback |
 | **s** | Stop playback |
 | **h** | Show help |
+| **r** | Toggle repeat |
+| **c** | Toggle controls |
 | **q** | Quit |
 
 The player will start immediately and display playback controls.
@@ -205,11 +207,6 @@ Contributions are welcome! Here's how you can help:
 4. Commit your changes (`git commit -m 'Add some amazing feature'`)
 5. Push to the branch (`git push origin feature/amazing-feature`)
 6. Open a Pull Request
-
-## Project Status
-
-- **Current Version**: v1.1.1
-- **Status**: Active Development
 
 ## Acknowledgments
 

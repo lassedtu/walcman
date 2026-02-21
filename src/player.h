@@ -26,6 +26,7 @@ typedef struct Player
 {
     int is_playing;           // 1 if audio is loaded and playing/paused
     int is_paused;            // 1 if currently paused
+    int loop_enabled;         // 1 if looping is enabled
     const char *current_file; // Path to currently loaded file
     void *audio_context;      // Opaque pointer to miniaudio context
 } Player;
@@ -102,5 +103,18 @@ PlayerState player_get_state(Player *player);
  * Returns: File path string, or NULL if nothing loaded
  */
 const char *player_get_current_file(Player *player);
+
+/**
+ * Toggle looping for current audio
+ * player: Player instance
+ */
+void player_toggle_loop(Player *player);
+
+/**
+ * Check if looping is enabled
+ * player: Player instance
+ * Returns: 1 if looping enabled, 0 otherwise
+ */
+int player_get_loop(Player *player);
 
 #endif // WALCMAN_PLAYER_H

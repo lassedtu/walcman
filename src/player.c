@@ -47,6 +47,7 @@ Player *player_create(void)
 
     player->is_playing = 0;
     player->is_paused = 0;
+    player->loop_enabled = 0;
     player->current_file = NULL;
     player->audio_context = ctx;
     ctx->is_initialized = 1;
@@ -83,6 +84,8 @@ int player_play(Player *player, const char *filepath)
         ma_sound_uninit(&ctx->sound);
         return -1;
     }
+
+    ma_sound_set_looping(&ctx->sound, player->loop_enabled);
 
     player->current_file = filepath;
     player->is_playing = 1;
@@ -214,4 +217,25 @@ const char *player_get_current_file(Player *player)
         return NULL;
 
     return player->current_file;
+}
+
+void player_toggle_loop(Player *player)
+{
+    if (!player)
+        return;
+
+    PlayerContext *ctx = (PlayerContext *)player->audio_context;
+    if (!ctx || !ctx->is_initialized || !player->is_playing)
+        return;
+
+    player->loop_enabled = !player->loop_enabled;
+    ma_sound_set_looping(&ctx->sound, player->loop_enabled);
+}
+
+int player_get_loop(Player *player)
+{
+    if (!player)
+        return 0;
+
+    return player->loop_enabled;
 }

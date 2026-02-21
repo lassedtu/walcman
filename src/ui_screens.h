@@ -13,17 +13,14 @@
 #define WALCMAN_UI_SCREENS_H
 
 #include "ui_core.h"
-
-// Forward declaration
-#ifndef WALCMAN_PLAYER_H
-typedef struct Player Player;
-#endif
+#include "player.h"
 
 /**
  * Build welcome screen (shown on startup)
  * buf: Buffer to build screen into
+ * show_controls: Whether to display control hints
  */
-void ui_screen_welcome(UIBuffer *buf);
+void ui_screen_welcome(UIBuffer *buf, int show_controls);
 
 /**
  * Build help screen showing all commands
@@ -35,8 +32,9 @@ void ui_screen_help(UIBuffer *buf);
  * Build now-playing screen with status
  * buf: Buffer to build screen into
  * player: Player instance to get state from
+ * show_controls: Whether to display control hints
  */
-void ui_screen_playing(UIBuffer *buf, Player *player);
+void ui_screen_playing(UIBuffer *buf, Player *player, int show_controls);
 
 /**
  * Build loading screen while file is loading

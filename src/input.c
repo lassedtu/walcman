@@ -37,6 +37,12 @@ InputAction input_map_key(int ch)
     case 'h':
     case 'H':
         return INPUT_ACTION_SHOW_HELP;
+    case 'c':
+    case 'C':
+        return INPUT_ACTION_TOGGLE_CONTROLS;
+    case 'r':
+    case 'R':
+        return INPUT_ACTION_TOGGLE_LOOP;
     case 'q':
     case 'Q':
         return INPUT_ACTION_QUIT;
@@ -74,7 +80,7 @@ static void prompt_for_file(Player *player, UIBuffer *ui_buf)
     }
 }
 
-int input_handle_action(Player *player, InputAction action, UIBuffer *ui_buf)
+int input_handle_action(Player *player, InputAction action, UIBuffer *ui_buf, int *show_controls)
 {
     switch (action)
     {
@@ -95,7 +101,7 @@ int input_handle_action(Player *player, InputAction action, UIBuffer *ui_buf)
             {
                 player_pause(player);
             }
-            ui_screen_playing(ui_buf, player);
+            ui_screen_playing(ui_buf, player, *show_controls);
             ui_buffer_render(ui_buf);
         }
         return 1;
@@ -104,7 +110,7 @@ int input_handle_action(Player *player, InputAction action, UIBuffer *ui_buf)
         if (player->is_playing)
         {
             player_stop(player);
-            ui_screen_playing(ui_buf, player);
+            ui_screen_playing(ui_buf, player, *show_controls);
             ui_buffer_render(ui_buf);
         }
         return 1;
@@ -116,8 +122,26 @@ int input_handle_action(Player *player, InputAction action, UIBuffer *ui_buf)
 
     case INPUT_ACTION_PROMPT_FILE:
         prompt_for_file(player, ui_buf);
-        ui_screen_playing(ui_buf, player);
+        ui_screen_playing(ui_buf, player, *show_controls);
         ui_buffer_render(ui_buf);
+        return 1;
+
+    case INPUT_ACTION_TOGGLE_CONTROLS:
+        if (show_controls)
+        {
+            *show_controls = !(*show_controls);
+            ui_screen_playing(ui_buf, player, *show_controls);
+            ui_buffer_render(ui_buf);
+        }
+        return 1;
+
+    case INPUT_ACTION_TOGGLE_LOOP:
+        if (player->is_playing)
+        {
+            player_toggle_loop(player);
+            ui_screen_playing(ui_buf, player, *show_controls);
+            ui_buffer_render(ui_buf);
+        }
         return 1;
 
     default:
