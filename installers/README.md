@@ -16,13 +16,13 @@ This directory contains platform-specific installation scripts for walcman.
 - **install-linux.sh** - Placeholder script
 - **uninstall-linux.sh** - Placeholder script
 
-Linux installers are planned for v1.2.0. Core playback functionality is experimental but should work with manual build.
+Linux installers are planned for the future. Core playback functionality is experimental but should work with manual build.
 
 ### Windows (Placeholder - Coming Soon)
 - **install-windows.bat** - Placeholder script
 - **uninstall-windows.bat** - Placeholder script
 
-Windows installers are planned for v1.2.0. Core playback functionality is experimental but should work with manual build.
+Windows installers are planned for the future. Core playback functionality is experimental but should work with manual build.
 
 ## Usage
 
