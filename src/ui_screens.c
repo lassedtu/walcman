@@ -27,6 +27,7 @@ typedef struct
 static const KeyHint common_commands[] = {
     {"[h]", "Help"},
     {"[c]", "Toggle controls"},
+    {"[o]", "Open settings"},
     {"[q]", "Quit"},
 };
 
@@ -194,4 +195,71 @@ void ui_screen_loading(UIBuffer *buf, const char *filepath)
 
     screen_begin(buf);
     ui_component_loading(buf, filepath);
+}
+
+void ui_screen_settings(UIBuffer *buf)
+{
+    if (!buf)
+        return;
+
+    screen_begin(buf);
+    ui_buffer_append(buf, "Settings\n\n");
+    ui_buffer_append(buf, "  [c]  UI Color\n");
+    ui_buffer_append(buf, "\n");
+    ui_component_key_hints_section(buf, "Navigation");
+    ui_component_key_hint(buf, "[q]", "Back");
+    screen_end(buf);
+}
+
+void ui_screen_color_picker(UIBuffer *buf, const char *selected_color)
+{
+    if (!buf)
+        return;
+
+    screen_begin(buf);
+    ui_buffer_append(buf, "Choose UI Color\n\n");
+
+    // Create colored versions of color names
+    char colored_text[64];
+
+    ui_format_with_color(colored_text, sizeof(colored_text), "Red", "red");
+    ui_buffer_appendf(buf, "  [1] %s\n", colored_text);
+
+    ui_format_with_color(colored_text, sizeof(colored_text), "Green", "green");
+    ui_buffer_appendf(buf, "  [2] %s\n", colored_text);
+
+    ui_format_with_color(colored_text, sizeof(colored_text), "Yellow", "yellow");
+    ui_buffer_appendf(buf, "  [3] %s\n", colored_text);
+
+    ui_format_with_color(colored_text, sizeof(colored_text), "Blue", "blue");
+    ui_buffer_appendf(buf, "  [4] %s\n", colored_text);
+
+    ui_format_with_color(colored_text, sizeof(colored_text), "Pink", "pink");
+    ui_buffer_appendf(buf, "  [5] %s\n", colored_text);
+
+    ui_format_with_color(colored_text, sizeof(colored_text), "Cyan", "cyan");
+    ui_buffer_appendf(buf, "  [6] %s\n", colored_text);
+
+    ui_format_with_color(colored_text, sizeof(colored_text), "White", "white");
+    ui_buffer_appendf(buf, "  [7] %s\n", colored_text);
+
+    ui_format_with_color(colored_text, sizeof(colored_text), "Gray", "gray");
+    ui_buffer_appendf(buf, "  [8] %s\n", colored_text);
+
+    ui_buffer_append(buf, "  [0] Default (no color)\n");
+    ui_buffer_append(buf, "\n");
+
+    if (selected_color && selected_color[0] != '\0')
+    {
+        ui_buffer_appendf(buf, "Current: %s\n", selected_color);
+    }
+    else
+    {
+        ui_buffer_append(buf, "Current: default\n");
+    }
+
+    ui_buffer_append(buf, "\n");
+    ui_component_key_hints_section(buf, "Navigation");
+    ui_component_key_hint(buf, "[q]", "Cancel");
+    screen_end(buf);
 }

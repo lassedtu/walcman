@@ -51,4 +51,21 @@ const char *ui_get_version(void);
  */
 const char *ui_get_color(void);
 
+/**
+ * Write UI color setting to config file
+ * color_name: Name of color (e.g., "cyan"), or NULL/"" for default
+ * Returns: 0 on success, -1 on error
+ */
+int ui_write_color_config(const char *color_name);
+
+/**
+ * Format text with a specific color
+ * buf: Output buffer
+ * size: Buffer size
+ * text: Text to colorize
+ * color_name: Color name (e.g., "red", "cyan")
+ * Result: text wrapped with ANSI color codes
+ */
+void ui_format_with_color(char *buf, size_t size, const char *text, const char *color_name);
+
 #endif // WALCMAN_UI_FORMAT_H

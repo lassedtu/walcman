@@ -43,4 +43,17 @@ void ui_screen_playing(UIBuffer *buf, Player *player, int show_controls);
  */
 void ui_screen_loading(UIBuffer *buf, const char *filepath);
 
+/**
+ * Build settings menu screen
+ * buf: Buffer to build screen into
+ */
+void ui_screen_settings(UIBuffer *buf);
+
+/**
+ * Build color picker screen
+ * buf: Buffer to build screen into
+ * selected_color: Currently selected color name (NULL for default)
+ */
+void ui_screen_color_picker(UIBuffer *buf, const char *selected_color);
+
 #endif // WALCMAN_UI_SCREENS_H

@@ -21,6 +21,7 @@
 #include "error.h"
 #include "terminal.h"
 #include "update.h"
+#include "screen_state.h"
 
 #define INPUT_POLL_INTERVAL_US 50000 // Poll for input every 50ms
 
@@ -102,6 +103,7 @@ int main(int argc, char *argv[])
     }
 
     // Interactive mode
+    ScreenState current_screen = SCREEN_WELCOME;
     ui_screen_welcome(ui_buf, show_controls);
     ui_buffer_render(ui_buf);
 
@@ -112,8 +114,81 @@ int main(int argc, char *argv[])
         int ch = terminal_read_char();
         if (ch != -1)
         {
-            InputAction action = input_map_key(ch);
-            running = input_handle_action(player, action, ui_buf, &show_controls);
+            // Handle input based on current screen
+            if (current_screen == SCREEN_COLOR_PICKER)
+            {
+                int color_result = input_handle_color_selection(ch);
+                if (color_result < 0)
+                {
+                    // Color was selected or cancelled, go back to settings
+                    current_screen = SCREEN_SETTINGS;
+                    ui_screen_settings(ui_buf);
+                    ui_buffer_render(ui_buf);
+                }
+                // If color_result is 1, stay in color picker and wait for next input
+            }
+            else if (current_screen == SCREEN_SETTINGS)
+            {
+                if (ch == 'c' || ch == 'C')
+                {
+                    // Enter color picker
+                    current_screen = SCREEN_COLOR_PICKER;
+                    ui_screen_color_picker(ui_buf, NULL);
+                    ui_buffer_render(ui_buf);
+                }
+                else if (ch == 'q' || ch == 'Q')
+                {
+                    // Exit settings, go back to main screen
+                    current_screen = SCREEN_WELCOME;
+                    if (player->is_playing)
+                    {
+                        current_screen = SCREEN_PLAYING;
+                        ui_screen_playing(ui_buf, player, show_controls);
+                    }
+                    else
+                    {
+                        ui_screen_welcome(ui_buf, show_controls);
+                    }
+                    ui_buffer_render(ui_buf);
+                }
+            }
+            else
+            {
+                // Normal screen input handling
+                InputAction action = input_map_key(ch);
+
+                if (action == INPUT_ACTION_QUIT)
+                {
+                    running = 0;
+                }
+                else if (action == INPUT_ACTION_SHOW_HELP)
+                {
+                    current_screen = SCREEN_HELP;
+                    ui_screen_help(ui_buf);
+                    ui_buffer_render(ui_buf);
+                }
+                else if (action == INPUT_ACTION_SHOW_SETTINGS)
+                {
+                    current_screen = SCREEN_SETTINGS;
+                    ui_screen_settings(ui_buf);
+                    ui_buffer_render(ui_buf);
+                }
+                else
+                {
+                    // Let the normal action handler deal with it
+                    running = input_handle_action(player, action, ui_buf, &show_controls);
+
+                    // Update screen state based on player state
+                    if (player->is_playing && current_screen != SCREEN_HELP)
+                    {
+                        current_screen = SCREEN_PLAYING;
+                    }
+                    else if (!player->is_playing && current_screen == SCREEN_PLAYING)
+                    {
+                        current_screen = SCREEN_WELCOME;
+                    }
+                }
+            }
         }
         else
         {
@@ -122,8 +197,11 @@ int main(int argc, char *argv[])
             if (state == STATE_PLAYING && player_has_finished(player))
             {
                 player_stop(player);
-                ui_screen_playing(ui_buf, player, show_controls);
-                ui_buffer_render(ui_buf);
+                if (current_screen == SCREEN_PLAYING)
+                {
+                    ui_screen_playing(ui_buf, player, show_controls);
+                    ui_buffer_render(ui_buf);
+                }
             }
             usleep(INPUT_POLL_INTERVAL_US);
         }

@@ -19,6 +19,7 @@
 #include "ui_core.h"
 #include "ui_components.h"
 #include "ui_screens.h"
+#include "ui_format.h"
 #include "error.h"
 #include "terminal.h"
 
@@ -43,6 +44,9 @@ InputAction input_map_key(int ch)
     case 'r':
     case 'R':
         return INPUT_ACTION_TOGGLE_LOOP;
+    case 'o':
+    case 'O':
+        return INPUT_ACTION_SHOW_SETTINGS;
     case 'q':
     case 'Q':
         return INPUT_ACTION_QUIT;
@@ -144,7 +148,60 @@ int input_handle_action(Player *player, InputAction action, UIBuffer *ui_buf, in
         }
         return 1;
 
+    case INPUT_ACTION_SHOW_SETTINGS:
+        ui_screen_settings(ui_buf);
+        ui_buffer_render(ui_buf);
+        return 1;
+
+    case INPUT_ACTION_SELECT_COLOR:
+    case INPUT_ACTION_BACK_TO_MAIN:
+        // These are handled by main.c with its screen state
+        return 1;
+
     default:
         return 1;
     }
+}
+
+/**
+ * Color selection array mapping numbers to color names
+ */
+static const char *color_options[] = {
+    "red",
+    "green",
+    "yellow",
+    "blue",
+    "pink",
+    "cyan",
+    "white",
+    "gray",
+    NULL // Sentinel
+};
+
+/**
+ * Handle color selection input (0-8 for colors, q to cancel)
+ * Returns: -1 if color was selected or cancelled, 1 to continue
+ */
+int input_handle_color_selection(int ch)
+{
+    if (ch >= '0' && ch <= '8')
+    {
+        int index = ch - '1';
+        if (ch == '0')
+        {
+            // Default color (empty)
+            ui_write_color_config("");
+            return -1; // Signal to exit color picker
+        }
+        else if (index >= 0 && index < 8 && color_options[index] != NULL)
+        {
+            ui_write_color_config(color_options[index]);
+            return -1; // Signal to exit color picker
+        }
+    }
+    else if (ch == 'q' || ch == 'Q')
+    {
+        return -1; // Cancel color picker
+    }
+    return 1; // Continue in color picker
 }

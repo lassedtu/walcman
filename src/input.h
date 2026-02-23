@@ -25,7 +25,10 @@ typedef enum
     INPUT_ACTION_SHOW_HELP,       // Display help screen
     INPUT_ACTION_PROMPT_FILE,     // Prompt user for file path to play
     INPUT_ACTION_TOGGLE_CONTROLS, // Toggle controls visibility
-    INPUT_ACTION_TOGGLE_LOOP      // Toggle audio looping
+    INPUT_ACTION_TOGGLE_LOOP,     // Toggle audio looping
+    INPUT_ACTION_SHOW_SETTINGS,   // Open settings menu
+    INPUT_ACTION_SELECT_COLOR,    // Enter color picker (submenu)
+    INPUT_ACTION_BACK_TO_MAIN     // Return to main screen
 } InputAction;
 
 /**
@@ -44,5 +47,12 @@ InputAction input_map_key(int ch);
  * Returns: 1 if program should continue, 0 if should exit
  */
 int input_handle_action(Player *player, InputAction action, UIBuffer *ui_buf, int *show_controls);
+
+/**
+ * Handle color selection input (submenu)
+ * ch: Character code from terminal
+ * Returns: -1 if color was selected or cancelled, 1 to continue in color picker
+ */
+int input_handle_color_selection(int ch);
 
 #endif // WALCMAN_INPUT_H

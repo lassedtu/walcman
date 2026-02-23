@@ -108,7 +108,7 @@ ui_color=cyan
 
 Available colors:
 - `red`, `green`, `yellow`, `blue`  
-- `magenta`, `purple`, `pink`
+- `pink`, `magenta`, `purple` (magenta and purple are aliases for pink)
 - `cyan`, `white`, `gray`, `orange`
 - Leave empty for default terminal color
 

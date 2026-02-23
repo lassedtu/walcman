@@ -122,7 +122,7 @@ const char *ui_get_version(void)
 /**
  * Convert color name to ANSI escape code
  */
-static const char *color_name_to_ansi(const char *color_name)
+const char *color_name_to_ansi(const char *color_name)
 {
     // Color mapping table
     typedef struct
@@ -136,9 +136,9 @@ static const char *color_name_to_ansi(const char *color_name)
         {"green", "\033[1;32m"},
         {"yellow", "\033[1;33m"},
         {"blue", "\033[1;34m"},
-        {"magenta", "\033[1;35m"},
-        {"purple", "\033[1;35m"}, // Alias for magenta
-        {"pink", "\033[1;35m"},   // Alias for magenta
+        {"pink", "\033[1;35m"},
+        {"magenta", "\033[1;35m"}, // Alias for pink
+        {"purple", "\033[1;35m"},  // Alias for pink
         {"cyan", "\033[1;36m"},
         {"white", "\033[1;37m"},
         {"gray", "\033[0;90m"},
@@ -211,4 +211,139 @@ const char *ui_get_color(void)
     }
 
     return ui_color_cache;
+}
+
+/**
+ * Write UI color setting to config file
+ */
+int ui_write_color_config(const char *color_name)
+{
+    const char *home = getenv("HOME");
+    if (!home)
+        return -1;
+
+    char config_path[512];
+    snprintf(config_path, sizeof(config_path), "%s%s", home, CONFIG_FILE);
+
+    // Read existing config
+    char *config_content = NULL;
+    size_t config_size = 0;
+    FILE *f = fopen(config_path, "r");
+    if (f)
+    {
+        // Get file size
+        fseek(f, 0, SEEK_END);
+        config_size = ftell(f);
+        fseek(f, 0, SEEK_SET);
+
+        config_content = (char *)malloc(config_size + 256); // Extra space for new line
+        if (!config_content)
+        {
+            fclose(f);
+            return -1;
+        }
+
+        fread(config_content, 1, config_size, f);
+        fclose(f);
+    }
+    else
+    {
+        config_content = (char *)malloc(256);
+        if (!config_content)
+            return -1;
+        config_content[0] = '\0';
+        config_size = 0;
+    }
+
+    // Write config back, updating or adding ui_color line
+    FILE *out = fopen(config_path, "w");
+    if (!out)
+    {
+        free(config_content);
+        return -1;
+    }
+
+    int found_ui_color = 0;
+    char line[256];
+    const char *ptr = config_content;
+
+    // Parse and update existing content
+    while (ptr && ptr - config_content < (int)config_size)
+    {
+        const char *newline = strchr(ptr, '\n');
+        size_t line_len = newline ? (newline - ptr) : strlen(ptr);
+
+        if (line_len < sizeof(line) - 1)
+        {
+            strncpy(line, ptr, line_len);
+            line[line_len] = '\0';
+
+            // Check if this is the ui_color line
+            if (strncmp(line, "ui_color=", 9) == 0)
+            {
+                found_ui_color = 1;
+                if (color_name && color_name[0] != '\0')
+                {
+                    fprintf(out, "ui_color=%s\n", color_name);
+                }
+                else
+                {
+                    fprintf(out, "ui_color=\n");
+                }
+            }
+            else
+            {
+                fprintf(out, "%s\n", line);
+            }
+        }
+
+        if (!newline)
+            break;
+        ptr = newline + 1;
+    }
+
+    // If ui_color wasn't found, add it
+    if (!found_ui_color)
+    {
+        if (color_name && color_name[0] != '\0')
+        {
+            fprintf(out, "ui_color=%s\n", color_name);
+        }
+        else
+        {
+            fprintf(out, "ui_color=\n");
+        }
+    }
+
+    fclose(out);
+    free(config_content);
+
+    // Reset cache so it reloads on next call
+    ui_color_loaded = 0;
+    ui_color_cache[0] = '\0';
+
+    return 0;
+}
+
+/**
+ * Format text with a specific color
+ */
+void ui_format_with_color(char *buf, size_t size, const char *text, const char *color_name)
+{
+    if (!buf || size == 0 || !text)
+        return;
+
+    const char *ansi_color = color_name_to_ansi(color_name);
+    const char *reset = "\033[0m";
+
+    if (ansi_color && ansi_color[0] != '\0')
+    {
+        snprintf(buf, size, "%s%s%s", ansi_color, text, reset);
+    }
+    else
+    {
+        // No valid color, just copy text as-is
+        strncpy(buf, text, size - 1);
+        buf[size - 1] = '\0';
+    }
 }
