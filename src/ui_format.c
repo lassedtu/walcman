@@ -6,6 +6,7 @@
  * - Filename extraction from paths
  * - Progress bar visual generation
  * - Version string management
+ * - UI color configuration management
  */
 
 #include <stdio.h>
@@ -334,11 +335,20 @@ void ui_format_with_color(char *buf, size_t size, const char *text, const char *
         return;
 
     const char *ansi_color = color_name_to_ansi(color_name);
-    const char *reset = "\033[0m";
+    const char *global_color = ui_get_color(); // Get global color to reset to
 
     if (ansi_color && ansi_color[0] != '\0')
     {
-        snprintf(buf, size, "%s%s%s", ansi_color, text, reset);
+        if (global_color && global_color[0] != '\0')
+        {
+            // Reset back to global color after displaying the temp color
+            snprintf(buf, size, "%s%s%s", ansi_color, text, global_color);
+        }
+        else
+        {
+            // No global color, reset to default
+            snprintf(buf, size, "%s%s\033[0m", ansi_color, text);
+        }
     }
     else
     {
