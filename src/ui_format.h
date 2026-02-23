@@ -45,4 +45,10 @@ void ui_format_progress_bar(char *buf, size_t size, float progress, int width);
  */
 const char *ui_get_version(void);
 
+/**
+ * Get the UI color ANSI code from config
+ * Returns: ANSI color code string (e.g., "\033[1;36m"), or "" if none
+ */
+const char *ui_get_color(void);
+
 #endif // WALCMAN_UI_FORMAT_H

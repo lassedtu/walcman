@@ -85,6 +85,11 @@ if [ ! -f "$CONFIG_FILE" ]; then
 # walcman configuration
 update_check_enabled=1
 check_interval_hours=24
+
+# UI color (color name)
+# Leave empty for default terminal color
+# Options: red, green, yellow, blue, magenta, purple, pink, cyan, white, gray, orange
+ui_color=
 CONFIG_EOF
     echo -e "${GREEN}✓ Config file created${NC}"
 else

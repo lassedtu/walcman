@@ -13,6 +13,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include "ui_core.h"
+#include "ui_format.h"
 
 #define INITIAL_BUFFER_SIZE 4096 // Start with 4KB buffer
 
@@ -130,7 +131,22 @@ void ui_buffer_render(UIBuffer *buf)
         return;
 
     ui_clear_screen();
+
+    // Apply UI color from config
+    const char *color = ui_get_color();
+    if (color && color[0] != '\0')
+    {
+        printf("%s", color);
+    }
+
     printf("%s", buf->buffer);
+
+    // Reset color
+    if (color && color[0] != '\0')
+    {
+        printf("\033[0m");
+    }
+
     fflush(stdout);
 }
 

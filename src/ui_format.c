@@ -9,13 +9,21 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <libgen.h>
 #include "ui_format.h"
 
 #ifndef VERSION
 #define VERSION "unknown" // Fallback if not provided by build system
 #endif
+
+#define CONFIG_FILE "/.config/walcman/config"
+
+// Cache for UI color
+static char ui_color_cache[32] = "";
+static int ui_color_loaded = 0;
 
 void ui_format_time(char *buf, size_t size, float seconds)
 {
@@ -109,4 +117,98 @@ void ui_format_progress_bar(char *buf, size_t size, float progress, int width)
 const char *ui_get_version(void)
 {
     return VERSION;
+}
+
+/**
+ * Convert color name to ANSI escape code
+ */
+static const char *color_name_to_ansi(const char *color_name)
+{
+    // Color mapping table
+    typedef struct
+    {
+        const char *name;
+        const char *ansi;
+    } ColorMap;
+
+    static const ColorMap colors[] = {
+        {"red", "\033[1;31m"},
+        {"green", "\033[1;32m"},
+        {"yellow", "\033[1;33m"},
+        {"blue", "\033[1;34m"},
+        {"magenta", "\033[1;35m"},
+        {"purple", "\033[1;35m"}, // Alias for magenta
+        {"pink", "\033[1;35m"},   // Alias for magenta
+        {"cyan", "\033[1;36m"},
+        {"white", "\033[1;37m"},
+        {"gray", "\033[0;90m"},
+        {"grey", "\033[0;90m"},   // Alternative spelling
+        {"orange", "\033[1;33m"}, // Use yellow for orange
+        {NULL, NULL}};
+
+    // Case-insensitive search
+    for (int i = 0; colors[i].name != NULL; i++)
+    {
+        if (strcasecmp(color_name, colors[i].name) == 0)
+        {
+            return colors[i].ansi;
+        }
+    }
+
+    return ""; // Unknown color, return empty string
+}
+
+const char *ui_get_color(void)
+{
+    // Load color from config on first call
+    if (!ui_color_loaded)
+    {
+        ui_color_loaded = 1;
+        const char *home = getenv("HOME");
+        if (!home)
+            return "";
+
+        char config_path[512];
+        snprintf(config_path, sizeof(config_path), "%s%s", home, CONFIG_FILE);
+
+        FILE *f = fopen(config_path, "r");
+        if (!f)
+            return "";
+
+        char line[256];
+        char color_name[64] = "";
+
+        while (fgets(line, sizeof(line), f))
+        {
+            // Skip comments and empty lines
+            if (line[0] == '#' || line[0] == '\n')
+                continue;
+
+            // Check for ui_color setting
+            if (strncmp(line, "ui_color=", 9) == 0)
+            {
+                const char *value = line + 9;
+                // Remove trailing newline and whitespace
+                size_t len = strcspn(value, "\n\r \t");
+                if (len > 0 && len < sizeof(color_name))
+                {
+                    strncpy(color_name, value, len);
+                    color_name[len] = '\0';
+
+                    // Convert color name to ANSI code
+                    const char *ansi = color_name_to_ansi(color_name);
+                    if (ansi && ansi[0] != '\0')
+                    {
+                        strncpy(ui_color_cache, ansi, sizeof(ui_color_cache) - 1);
+                        ui_color_cache[sizeof(ui_color_cache) - 1] = '\0';
+                    }
+                }
+                break;
+            }
+        }
+
+        fclose(f);
+    }
+
+    return ui_color_cache;
 }

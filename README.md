@@ -92,17 +92,25 @@ walcman /path/to/song.mp3
 
 Config file: `~/.config/walcman/config`
 
-| Option                 | Values    | Description                            |
-| ---------------------- | --------- | -------------------------------------- |
-| `update_check_enabled` | `1` / `0` | Enable or disable update checks        |
-| `check_interval_hours` | Integer   | How often to check for updates (hours) |
+| Option                 | Values      | Description                            |
+| ---------------------- | ----------- | -------------------------------------- |
+| `update_check_enabled` | `1` / `0`   | Enable or disable update checks        |
+| `check_interval_hours` | Integer     | How often to check for updates (hours) |
+| `ui_color`             | Color name  | Color for entire UI text (optional)    |
 
 Example:
 
 ```
 update_check_enabled=1
 check_interval_hours=24
+ui_color=cyan
 ```
+
+Available colors:
+- `red`, `green`, `yellow`, `blue`  
+- `magenta`, `purple`, `pink`
+- `cyan`, `white`, `gray`, `orange`
+- Leave empty for default terminal color
 
 ---
 
