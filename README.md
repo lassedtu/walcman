@@ -82,6 +82,7 @@ walcman /path/to/song.mp3
 | `r`     | Toggle repeat  |
 | `h`     | Help           |
 | `c`     | Toggle controls|
+| `o`     | Open settings  |
 | `q`     | Quit           |
 
 ---
