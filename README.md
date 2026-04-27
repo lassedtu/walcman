@@ -135,4 +135,5 @@ Contributions are welcome! Fork the repo, make your changes on a new branch, and
 ## Acknowledgments
 
 - [miniaudio](https://github.com/mackron/miniaudio): core audio library
-- **Ana**: for the original concept and for helping refine the direction of the project from its earliest stages.
+- **Ana**: for the original concept and for helping refine the direction of the project from its earliest stages
+- [mashdtu](https://github.com/mashdtu): for providing Linux installation / uninstallation scripts
