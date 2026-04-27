@@ -92,3 +92,8 @@ else
     echo -e "${GREEN}Config file exists${NC}"
 fi
 echo ""
+
+# Setup shell alias
+echo "Configuring shell alias..."
+
+
