@@ -17,7 +17,7 @@ A lightweight music and audio player that lives in your terminal. Built with C a
 | Platform | Status       | Installer |
 | -------- | ------------ | --------- |
 | macOS    | Stable       | Yes       |
-| Linux    | Experimental | No        |
+| Linux    | Stable       | Yes       |
 | Windows  | Experimental | No        |
 
 Linux and Windows require a manual build.
@@ -26,7 +26,8 @@ Linux and Windows require a manual build.
 
 ## Installation
 
-### macOS
+### macOS / Linux
+> *Note that only macOS currently supports the autoupdater, Linux users will have to manually reinstall on updates for now*
 
 ```bash
 git clone https://github.com/lassedtu/walcman.git
@@ -46,7 +47,7 @@ To uninstall:
 make uninstall
 ```
 
-### Linux / Windows (Manual Build)
+### Windows (Manual Build)
 
 **Requirements:** C compiler (clang or gcc), `make`, POSIX environment
 
@@ -61,7 +62,7 @@ make
 
 ## Usage
 
-> **Note:** If installed via the macOS installer, run `walcman` from any directory. If built manually, use `./build/walcman`.
+> **Notes:** If installed via the macOS or Linux installer, run `walcman` from any directory. If built manually, use `./build/walcman`.
 
 ```bash
 walcman
@@ -101,7 +102,7 @@ walcman /path/to/playlist
 
 ## Configuration
 
-> Only available when installed via the macOS installer.
+> Only available when installed via the macOS or Linux installer.
 
 Config file: `~/.config/walcman/config`
 
