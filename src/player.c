@@ -239,3 +239,20 @@ int player_get_loop(Player *player)
 
     return player->loop_enabled;
 }
+
+void player_set_loop(Player *player, int enabled)
+{
+    if (!player)
+        return;
+
+    PlayerContext *ctx = (PlayerContext *)player->audio_context;
+    if (!ctx || !ctx->is_initialized)
+        return;
+
+    player->loop_enabled = enabled ? 1 : 0;
+
+    if (player->is_playing)
+    {
+        ma_sound_set_looping(&ctx->sound, player->loop_enabled);
+    }
+}

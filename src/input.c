@@ -35,9 +35,24 @@ InputAction input_map_key(int ch)
     case 'p':
     case 'P':
         return INPUT_ACTION_PROMPT_FILE;
-    case 'h':
-    case 'H':
-        return INPUT_ACTION_SHOW_HELP;
+    case 'l':
+    case 'L':
+        return INPUT_ACTION_LOAD_PLAYLIST;
+    case 'a':
+    case 'A':
+        return INPUT_ACTION_ENQUEUE_FILE;
+    case 'v':
+    case 'V':
+        return INPUT_ACTION_SHOW_QUEUE;
+    case 'n':
+    case 'N':
+        return INPUT_ACTION_NEXT_TRACK;
+    case 'b':
+    case 'B':
+        return INPUT_ACTION_PREVIOUS_TRACK;
+    case 'f':
+    case 'F':
+        return INPUT_ACTION_TOGGLE_SHUFFLE;
     case 'c':
     case 'C':
         return INPUT_ACTION_TOGGLE_CONTROLS;
@@ -55,33 +70,27 @@ InputAction input_map_key(int ch)
     }
 }
 
-static void prompt_for_file(Player *player, UIBuffer *ui_buf)
+int input_prompt_path(UIBuffer *ui_buf, const char *prompt_text, char *out_path, size_t out_size)
 {
-    if (!ui_buf)
-        return;
+    if (!ui_buf || !prompt_text || !out_path || out_size == 0)
+        return 0;
 
     ui_buffer_clear(ui_buf);
     ui_component_header(ui_buf);
     ui_component_separator(ui_buf, 50);
     ui_buffer_append(ui_buf, "\n");
-    ui_buffer_append(ui_buf, "Enter file path: ");
+    ui_buffer_append(ui_buf, prompt_text);
     ui_buffer_render(ui_buf);
 
-    char filepath[512];
-    int len = terminal_read_line(filepath, sizeof(filepath));
+    int len = terminal_read_line(out_path, (int)out_size);
 
     if (len > 0)
     {
-        strip_quotes(filepath);
-        unescape_path(filepath);
-        ui_screen_loading(ui_buf, filepath);
-        ui_buffer_render(ui_buf);
-
-        if (player_play(player, filepath) != 0)
-        {
-            error_print(ERR_FILE_LOAD, filepath);
-        }
+        strip_quotes(out_path);
+        unescape_path(out_path);
     }
+
+    return len;
 }
 
 int input_handle_action(Player *player, InputAction action, UIBuffer *ui_buf, int *show_controls)
@@ -97,6 +106,7 @@ int input_handle_action(Player *player, InputAction action, UIBuffer *ui_buf, in
     case INPUT_ACTION_TOGGLE_PAUSE:
         if (player->is_playing)
         {
+            const char *repeat_symbol = player_get_loop(player) ? "↺1" : "⇾";
             if (player->is_paused)
             {
                 player_resume(player);
@@ -105,7 +115,7 @@ int input_handle_action(Player *player, InputAction action, UIBuffer *ui_buf, in
             {
                 player_pause(player);
             }
-            ui_screen_playing(ui_buf, player, *show_controls);
+            ui_screen_playing(ui_buf, player, *show_controls, repeat_symbol, "Off");
             ui_buffer_render(ui_buf);
         }
         return 1;
@@ -113,28 +123,29 @@ int input_handle_action(Player *player, InputAction action, UIBuffer *ui_buf, in
     case INPUT_ACTION_STOP:
         if (player->is_playing)
         {
+            const char *repeat_symbol = player_get_loop(player) ? "↺1" : "⇾";
             player_stop(player);
-            ui_screen_playing(ui_buf, player, *show_controls);
+            ui_screen_playing(ui_buf, player, *show_controls, repeat_symbol, "Off");
             ui_buffer_render(ui_buf);
         }
         return 1;
 
-    case INPUT_ACTION_SHOW_HELP:
-        ui_screen_help(ui_buf);
-        ui_buffer_render(ui_buf);
-        return 1;
-
     case INPUT_ACTION_PROMPT_FILE:
-        prompt_for_file(player, ui_buf);
-        ui_screen_playing(ui_buf, player, *show_controls);
-        ui_buffer_render(ui_buf);
+    case INPUT_ACTION_LOAD_PLAYLIST:
+    case INPUT_ACTION_ENQUEUE_FILE:
+    case INPUT_ACTION_SHOW_QUEUE:
+    case INPUT_ACTION_NEXT_TRACK:
+    case INPUT_ACTION_PREVIOUS_TRACK:
+    case INPUT_ACTION_TOGGLE_SHUFFLE:
+        // These are handled by main.c through the controller layer.
         return 1;
 
     case INPUT_ACTION_TOGGLE_CONTROLS:
         if (show_controls)
         {
+            const char *repeat_symbol = player_get_loop(player) ? "↺1" : "⇾";
             *show_controls = !(*show_controls);
-            ui_screen_playing(ui_buf, player, *show_controls);
+            ui_screen_playing(ui_buf, player, *show_controls, repeat_symbol, "Off");
             ui_buffer_render(ui_buf);
         }
         return 1;
@@ -143,7 +154,9 @@ int input_handle_action(Player *player, InputAction action, UIBuffer *ui_buf, in
         if (player->is_playing)
         {
             player_toggle_loop(player);
-            ui_screen_playing(ui_buf, player, *show_controls);
+            ui_screen_playing(ui_buf, player, *show_controls,
+                              player_get_loop(player) ? "↺1" : "⇾",
+                              "Off");
             ui_buffer_render(ui_buf);
         }
         return 1;

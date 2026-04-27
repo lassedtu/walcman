@@ -11,6 +11,7 @@ typedef enum
     SCREEN_WELCOME,     // Initial/main screen
     SCREEN_PLAYING,     // Now playing screen
     SCREEN_HELP,        // Help screen
+    SCREEN_QUEUE,       // Queue view
     SCREEN_SETTINGS,    // Settings menu
     SCREEN_COLOR_PICKER // Color picker submenu
 } ScreenState;

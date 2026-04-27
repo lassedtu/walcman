@@ -6,7 +6,8 @@ A lightweight music and audio player that lives in your terminal. Built with C a
 
 - Play MP3, WAV, FLAC, M4A, OGG, AAC, WMA
 - Single-key controls (no Enter required)
-- File argument support
+- Queue and playlist support 🚀
+- File and folder argument support
 - Auto-detect end of playback
 - macOS installer with version management
 - Optional non-blocking auto-update check
@@ -72,18 +73,29 @@ To play a file directly:
 walcman /path/to/song.mp3
 ```
 
+To play a playlist/folder directly:
+
+```bash
+walcman /path/to/playlist
+```
+
 ### Controls
 
-| Key     | Action         |
-| ------- | -------------- |
-| `p`     | Play file      |
-| `Space` | Pause / Resume |
-| `s`     | Stop           |
-| `r`     | Toggle repeat  |
-| `h`     | Help           |
-| `c`     | Toggle controls|
-| `o`     | Open settings  |
-| `q`     | Quit           |
+| Key     | Action               |
+| ------- | -------------------- |
+| `p`     | Play file            |
+| `Space` | Pause / Resume       |
+| `s`     | Stop                 |
+| `r`     | Toggle repeat        |
+| `n`     | Next track           |
+| `b`     | Previous track       |
+| `v`     | View queue           |
+| `l`     | Load playlist folder |
+| `a`     | Add file to queue    |
+| `f`     | Toggle shuffle       |
+| `c`     | Toggle controls      |
+| `o`     | Open settings        |
+| `q`     | Quit                 |
 
 ---
 

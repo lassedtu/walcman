@@ -21,7 +21,7 @@ SRC_DIR := src
 BUILD_DIR := build
 BIN := $(BUILD_DIR)/walcman
 
-SOURCES := $(SRC_DIR)/main.c $(SRC_DIR)/player.c $(SRC_DIR)/input.c $(SRC_DIR)/util.c $(SRC_DIR)/error.c $(SRC_DIR)/terminal.c $(SRC_DIR)/ui_core.c $(SRC_DIR)/ui_format.c $(SRC_DIR)/ui_components.c $(SRC_DIR)/ui_screens.c $(SRC_DIR)/update.c
+SOURCES := $(SRC_DIR)/main.c $(SRC_DIR)/player.c $(SRC_DIR)/input.c $(SRC_DIR)/util.c $(SRC_DIR)/error.c $(SRC_DIR)/terminal.c $(SRC_DIR)/ui_core.c $(SRC_DIR)/ui_format.c $(SRC_DIR)/ui_components.c $(SRC_DIR)/ui_screens.c $(SRC_DIR)/update.c $(SRC_DIR)/queue.c $(SRC_DIR)/app_controller.c
 OBJECTS := $(SOURCES:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
 
 all: $(BIN)

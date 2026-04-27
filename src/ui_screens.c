@@ -25,7 +25,7 @@ typedef struct
 
 // Common commands shown in all contexts
 static const KeyHint common_commands[] = {
-    {"[h]", "Help"},
+    {"[v]", "View queue"},
     {"[c]", "Toggle controls"},
     {"[o]", "Open settings"},
     {"[q]", "Quit"},
@@ -78,10 +78,15 @@ static void display_commands(UIBuffer *buf, const char *title, int show_play_fil
     if (show_play_file)
     {
         ui_component_key_hint(buf, "[p]", "Play file");
+        ui_component_key_hint(buf, "[l]", "Load playlist folder");
+        ui_component_key_hint(buf, "[a]", "Add file to queue");
     }
     else
     {
         ui_component_key_hint(buf, "[space]", "Play/Pause");
+        ui_component_key_hint(buf, "[b]", "Previous track");
+        ui_component_key_hint(buf, "[n]", "Next track");
+        ui_component_key_hint(buf, "[f]", "Toggle shuffle");
     }
 
     // Common commands
@@ -91,13 +96,17 @@ static void display_commands(UIBuffer *buf, const char *title, int show_play_fil
     }
 }
 
-void ui_screen_welcome(UIBuffer *buf, int show_controls)
+void ui_screen_welcome(UIBuffer *buf, int show_controls, const char *repeat_symbol, const char *shuffle_symbol, const char *repeat_label)
 {
     if (!buf)
         return;
 
+    (void)repeat_label;
+
     screen_begin(buf);
-    ui_component_message(buf, "Ready to play");
+    ui_buffer_appendf(buf, "Ready to play %s %s\n",
+                      repeat_symbol ? repeat_symbol : "⇾",
+                      shuffle_symbol ? shuffle_symbol : "-");
     ui_buffer_append(buf, "\n");
     display_commands(buf, "Commands", 1, show_controls);
     screen_end(buf);
@@ -113,9 +122,12 @@ void ui_screen_help(UIBuffer *buf)
 
     ui_component_key_hints_section(buf, "Commands");
     ui_component_key_hint(buf, "[p]", "Play file");
+    ui_component_key_hint(buf, "[l]", "Load playlist folder");
+    ui_component_key_hint(buf, "[a]", "Add file to queue");
     ui_component_key_hint(buf, "[space]", "Play/Pause");
     ui_component_key_hint(buf, "[s]", "Stop");
-    ui_component_key_hint(buf, "[r]", "Toggle repeat");
+    ui_component_key_hint(buf, "[n]", "Next track");
+    ui_component_key_hint(buf, "[r]", "Cycle repeat mode");
     for (size_t i = 0; i < COMMON_COMMANDS_COUNT; i++)
     {
         ui_component_key_hint(buf, common_commands[i].key, common_commands[i].description);
@@ -124,10 +136,12 @@ void ui_screen_help(UIBuffer *buf)
     screen_end(buf);
 }
 
-void ui_screen_playing(UIBuffer *buf, Player *player, int show_controls)
+void ui_screen_playing(UIBuffer *buf, Player *player, int show_controls, const char *repeat_symbol, const char *repeat_label)
 {
     if (!buf || !player)
         return;
+
+    (void)repeat_label;
 
     screen_begin(buf);
 
@@ -149,13 +163,14 @@ void ui_screen_playing(UIBuffer *buf, Player *player, int show_controls)
 
         // Show currently playing file with loop status indicator
         const char *current_file = player_get_current_file(player);
-        const char *loop_indicator = player_get_loop(player) ? " ↺" : " ⇾";
+        const char *loop_indicator = repeat_symbol ? repeat_symbol : "⇾";
 
         char formatted_filename[64];
         ui_format_filename(formatted_filename, sizeof(formatted_filename), current_file, 40);
 
         ui_buffer_append(buf, "File: ");
         ui_buffer_append(buf, formatted_filename);
+        ui_buffer_append(buf, " ");
         ui_buffer_append(buf, loop_indicator);
         ui_buffer_append(buf, "\n");
         ui_buffer_append(buf, "\n");
@@ -166,7 +181,7 @@ void ui_screen_playing(UIBuffer *buf, Player *player, int show_controls)
             ui_component_key_hints_section(buf, "Controls");
             ui_component_key_hint(buf, "[space]", "Play/Pause");
             ui_component_key_hint(buf, "[s]", "Stop");
-            ui_component_key_hint(buf, "[r]", "Toggle repeat");
+            ui_component_key_hint(buf, "[r]", "Cycle repeat mode");
             for (size_t i = 0; i < COMMON_COMMANDS_COUNT; i++)
             {
                 ui_component_key_hint(buf, common_commands[i].key, common_commands[i].description);
@@ -180,7 +195,7 @@ void ui_screen_playing(UIBuffer *buf, Player *player, int show_controls)
     else
     {
         // Not playing - show welcome screen
-        ui_component_message(buf, "Ready to play");
+        ui_buffer_appendf(buf, "Ready to play %s\n", repeat_symbol ? repeat_symbol : "⇾");
         ui_buffer_append(buf, "\n");
         display_commands(buf, "Commands", 1, show_controls);
     }
@@ -261,5 +276,63 @@ void ui_screen_color_picker(UIBuffer *buf, const char *selected_color)
     ui_buffer_append(buf, "\n");
     ui_component_key_hints_section(buf, "Navigation");
     ui_component_key_hint(buf, "[q]", "Cancel");
+    screen_end(buf);
+}
+
+void ui_screen_queue(UIBuffer *buf, const Queue *queue, const char *repeat_symbol, const char *repeat_label)
+{
+    if (!buf)
+        return;
+
+    (void)repeat_label;
+
+    screen_begin(buf);
+    ui_buffer_appendf(buf, "Queue %s %s\n\n", repeat_symbol ? repeat_symbol : "⇾", (queue && queue_get_shuffle(queue)) ? "~" : "-");
+
+    if (!queue || queue_count(queue) == 0)
+    {
+        ui_component_message(buf, "Queue is empty");
+        ui_buffer_append(buf, "\n");
+        ui_component_key_hints_section(buf, "Queue");
+        ui_component_key_hint(buf, "[l]", "Load playlist folder");
+        ui_component_key_hint(buf, "[a]", "Add file to queue");
+        ui_component_key_hint(buf, "[f]", "Toggle shuffle");
+        ui_component_key_hints_section(buf, "Navigation");
+        ui_component_key_hint(buf, "[q]", "Back");
+        screen_end(buf);
+        return;
+    }
+
+    int current = queue_get_current_index(queue);
+    size_t count = queue_count(queue);
+
+    ui_buffer_appendf(buf, "Tracks: %zu\n", count);
+    ui_buffer_append(buf, "\n");
+
+    for (size_t i = 0; i < count; i++)
+    {
+        const char *item = queue_get_item(queue, i);
+        char formatted_name[64];
+        ui_format_filename(formatted_name, sizeof(formatted_name), item, 40);
+
+        if ((int)i == current)
+        {
+            ui_buffer_appendf(buf, " > %zu. %s\n", i + 1, formatted_name);
+        }
+        else
+        {
+            ui_buffer_appendf(buf, "   %zu. %s\n", i + 1, formatted_name);
+        }
+    }
+
+    ui_buffer_append(buf, "\n");
+    ui_component_key_hints_section(buf, "Queue");
+    ui_component_key_hint(buf, "[b]", "Previous track");
+    ui_component_key_hint(buf, "[n]", "Next track");
+    ui_component_key_hint(buf, "[r]", "Cycle repeat mode");
+    ui_component_key_hint(buf, "[f]", "Toggle shuffle");
+    ui_component_key_hint(buf, "[a]", "Add file to queue");
+    ui_component_key_hints_section(buf, "Navigation");
+    ui_component_key_hint(buf, "[q]", "Back");
     screen_end(buf);
 }

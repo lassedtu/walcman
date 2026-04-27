@@ -117,4 +117,11 @@ void player_toggle_loop(Player *player);
  */
 int player_get_loop(Player *player);
 
+/**
+ * Set looping state explicitly.
+ * player: Player instance
+ * enabled: 1 to enable loop, 0 to disable
+ */
+void player_set_loop(Player *player, int enabled);
+
 #endif // WALCMAN_PLAYER_H

@@ -152,6 +152,7 @@ void ui_buffer_render(UIBuffer *buf)
 
 void ui_clear_screen(void)
 {
-    printf("\033[2J\033[H");
+    // Clear visible screen + scrollback, then move cursor home.
+    printf("\033[2J\033[3J\033[H");
     fflush(stdout);
 }

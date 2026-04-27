@@ -14,13 +14,17 @@
 
 #include "ui_core.h"
 #include "player.h"
+#include "queue.h"
 
 /**
  * Build welcome screen (shown on startup)
  * buf: Buffer to build screen into
  * show_controls: Whether to display control hints
+ * repeat_symbol: Compact repeat symbol (e.g. "⇾", "↺", "↻")
+ * shuffle_symbol: Compact shuffle symbol ("-" or "~")
+ * repeat_label: Repeat mode label (e.g. "Off", "Song", "Playlist")
  */
-void ui_screen_welcome(UIBuffer *buf, int show_controls);
+void ui_screen_welcome(UIBuffer *buf, int show_controls, const char *repeat_symbol, const char *shuffle_symbol, const char *repeat_label);
 
 /**
  * Build help screen showing all commands
@@ -33,8 +37,10 @@ void ui_screen_help(UIBuffer *buf);
  * buf: Buffer to build screen into
  * player: Player instance to get state from
  * show_controls: Whether to display control hints
+ * repeat_symbol: Compact repeat symbol (e.g. "⇾", "↺", "↻")
+ * repeat_label: Repeat mode label (e.g. "Off", "Song", "Playlist")
  */
-void ui_screen_playing(UIBuffer *buf, Player *player, int show_controls);
+void ui_screen_playing(UIBuffer *buf, Player *player, int show_controls, const char *repeat_symbol, const char *repeat_label);
 
 /**
  * Build loading screen while file is loading
@@ -55,5 +61,14 @@ void ui_screen_settings(UIBuffer *buf);
  * selected_color: Currently selected color name (NULL for default)
  */
 void ui_screen_color_picker(UIBuffer *buf, const char *selected_color);
+
+/**
+ * Build queue view screen
+ * buf: Buffer to build screen into
+ * queue: Queue state to display
+ * repeat_symbol: Compact repeat symbol
+ * repeat_label: Current repeat mode label
+ */
+void ui_screen_queue(UIBuffer *buf, const Queue *queue, const char *repeat_symbol, const char *repeat_label);
 
 #endif // WALCMAN_UI_SCREENS_H

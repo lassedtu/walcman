@@ -14,6 +14,7 @@
 
 #include "player.h"
 #include "ui_core.h"
+#include <stddef.h>
 
 // Action codes returned by input handlers
 typedef enum
@@ -22,8 +23,13 @@ typedef enum
     INPUT_ACTION_QUIT,            // Exit program
     INPUT_ACTION_TOGGLE_PAUSE,    // Toggle play/pause state
     INPUT_ACTION_STOP,            // Stop playback completely
-    INPUT_ACTION_SHOW_HELP,       // Display help screen
     INPUT_ACTION_PROMPT_FILE,     // Prompt user for file path to play
+    INPUT_ACTION_LOAD_PLAYLIST,   // Prompt folder and load playlist
+    INPUT_ACTION_ENQUEUE_FILE,    // Prompt file and append to queue
+    INPUT_ACTION_SHOW_QUEUE,      // Show queue screen
+    INPUT_ACTION_NEXT_TRACK,      // Skip to next track
+    INPUT_ACTION_PREVIOUS_TRACK,  // Go to previous track
+    INPUT_ACTION_TOGGLE_SHUFFLE,  // Toggle shuffle mode
     INPUT_ACTION_TOGGLE_CONTROLS, // Toggle controls visibility
     INPUT_ACTION_TOGGLE_LOOP,     // Toggle audio looping
     INPUT_ACTION_SHOW_SETTINGS,   // Open settings menu
@@ -47,6 +53,16 @@ InputAction input_map_key(int ch);
  * Returns: 1 if program should continue, 0 if should exit
  */
 int input_handle_action(Player *player, InputAction action, UIBuffer *ui_buf, int *show_controls);
+
+/**
+ * Prompt for path input using current UI style.
+ * ui_buf: UI buffer for rendering prompt screen
+ * prompt_text: Prompt text shown to user (e.g. "Enter file path: ")
+ * out_path: Output buffer
+ * out_size: Output buffer size
+ * Returns: length of captured input, or 0 if empty
+ */
+int input_prompt_path(UIBuffer *ui_buf, const char *prompt_text, char *out_path, size_t out_size);
 
 /**
  * Handle color selection input (submenu)
