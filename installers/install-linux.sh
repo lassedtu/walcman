@@ -3,14 +3,15 @@
 # basically copied from install-macos.shell
 
 # Configuration
-#INSTALL_DIR="$HOME/.local/bin/"
+INSTALL_DIR="$HOME/.local/bin/"
 ALIAS_NAME="walcman"
 
 # Get the directory where the install script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Get the project root directory (parent of installers/)
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-INSTALL_DIR="$PROJECT_ROOT/test/"
+
+#INSTALL_DIR="$PROJECT_ROOT/test/"
 
 echo Installing at $INSTALL_DIR
 
@@ -97,7 +98,7 @@ echo ""
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo -e "${GREEN}Installation complete!${NC}"
+echo -"Installation complete."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "To start using walcman, either:"
