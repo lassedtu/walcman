@@ -93,7 +93,16 @@ else
 fi
 echo ""
 
-# Setup shell alias
-echo "Configuring shell alias..."
 
 
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo -e "${GREEN}Installation complete!${NC}"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+echo "To start using walcman, either:"
+echo "  1. Restart your terminal"
+echo "  2. Run: source ~/.zshrc"
+echo ""
+echo "Then run: walcman <audio-file>"
+echo ""
