@@ -14,7 +14,10 @@ ifeq ($(UNAME), Darwin)
 endif
 ifeq ($(UNAME), Linux)
     # Linux
-    LDFLAGS += -lpulse -lpthread
+	CFLAGS += -D_DEFAULT_SOURCE
+	CFLAGS += $(shell pkg-config --exists libpulse || echo -DMA_NO_PULSEAUDIO)
+	LDFLAGS += -lpthread -ldl
+	LDFLAGS += $(shell pkg-config --libs libpulse 2>/dev/null)
 endif
 
 SRC_DIR := src
