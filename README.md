@@ -27,7 +27,7 @@ Linux and Windows require a manual build.
 ## Installation
 
 ### macOS / Linux
-> *Note that only macOS currently supports the autoupdater, Linux users will have to manually reinstall on updates for now*
+> **Note:** only macOS currently supports the autoupdater, Linux users will have to manually reinstall on updates for now
 
 ```bash
 git clone https://github.com/lassedtu/walcman.git
@@ -62,7 +62,7 @@ make
 
 ## Usage
 
-> **Notes:** If installed via the macOS or Linux installer, run `walcman` from any directory. If built manually, use `./build/walcman`.
+> **Note:** If installed via the macOS or Linux installer, run `walcman` from any directory. If built manually, use `./build/walcman`.
 
 ```bash
 walcman
