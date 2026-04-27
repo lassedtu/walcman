@@ -3,13 +3,14 @@
 # basically copied from install-macos.shell
 
 # Configuration
-INSTALL_DIR="$HOME/.local/bin/"
+#INSTALL_DIR="$HOME/.local/bin/"
 ALIAS_NAME="walcman"
 
 # Get the directory where the install script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Get the project root directory (parent of installers/)
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+INSTALL_DIR="$PROJECT_ROOT/test/"
 
 echo Installing at $INSTALL_DIR
 
@@ -58,3 +59,36 @@ fi
 echo -e "${GREEN}Build successful${NC}" # nice ai checkmark symbol in the original lol
 echo ""
 
+
+# Create installation directory
+echo "Installing to $INSTALL_DIR..."
+mkdir -p "$INSTALL_DIR"
+
+# Copy files to install directory
+cp "$PROJECT_ROOT/build/walcman" "$INSTALL_DIR/"
+cp "$PROJECT_ROOT/VERSION" "$INSTALL_DIR/"          # should this not be baked into the executable?
+
+# Make binary executable
+chmod +x "$INSTALL_DIR/walcman"
+
+echo -e "${GREEN}Installation complete${NC}"
+echo ""
+
+# Create config file with defaults if it doesn't exist
+CONFIG_FILE="$INSTALL_DIR/config"
+if [ ! -f "$CONFIG_FILE" ]; then
+    cat > "$CONFIG_FILE" << 'CONFIG_EOF'
+# walcman configuration
+update_check_enabled=1
+check_interval_hours=24
+
+# UI color (color name)
+# Leave empty for default terminal color
+# Options: red, green, yellow, blue, magenta, purple, pink, cyan, white, gray, orange
+ui_color=
+CONFIG_EOF
+    echo -e "${GREEN}Config file created${NC}"
+else
+    echo -e "${GREEN}Config file exists${NC}"
+fi
+echo ""
