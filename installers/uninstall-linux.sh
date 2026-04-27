@@ -3,8 +3,9 @@
 set -e
 
 INSTALL_DIR="$HOME/.local/bin/"
+CONFIG_DIR="$HOME/.config/walcman"
 ALIAS_NAME="walcman"
-TARGET_BIN="$INSTALL_DIR/$ALIAS_NAME"
+TARGET_BIN="$INSTALL_DIR$ALIAS_NAME"
 
 ZSHRC_FILE="$HOME/.zshrc"
 BASHRC_FILE="$HOME/.bashrc"
@@ -44,6 +45,11 @@ fi
 if [ -f "$INSTALL_DIR/config" ]; then
 	rm -f "$INSTALL_DIR/config"
 	echo "Removed: $INSTALL_DIR/config"
+fi
+
+if [ -d "$CONFIG_DIR" ]; then
+	rm -rf "$CONFIG_DIR"
+	echo "Removed: $CONFIG_DIR"
 fi
 
 remove_alias_from_file "$ZSHRC_FILE"

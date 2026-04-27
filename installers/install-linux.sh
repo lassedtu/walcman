@@ -4,7 +4,11 @@
 
 # Configuration
 INSTALL_DIR="$HOME/.local/bin/"
+CONFIG_DIR="$HOME/.config/walcman"
+CONFIG_FILE="$CONFIG_DIR/config"
+VERSION_FILE="$CONFIG_DIR/VERSION"
 ALIAS_NAME="walcman"
+ZSHRC_FILE="$HOME/.zshrc"
 
 # Get the directory where the install script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -51,9 +55,11 @@ echo ""
 # Create installation directory
 echo "Installing to $INSTALL_DIR..."
 mkdir -p "$INSTALL_DIR"
+mkdir -p "$CONFIG_DIR"
 
 # Copy files to install directory
 cp "$PROJECT_ROOT/build/walcman" "$INSTALL_DIR/"
+cp "$PROJECT_ROOT/VERSION" "$VERSION_FILE"
 
 # Make binary executable
 chmod +x "$INSTALL_DIR/walcman"
@@ -62,7 +68,6 @@ echo -e "${GREEN}Installation complete${NC}"
 echo ""
 
 # Create config file with defaults if it doesn't exist
-CONFIG_FILE="$INSTALL_DIR/config"
 if [ ! -f "$CONFIG_FILE" ]; then
     cat > "$CONFIG_FILE" << 'CONFIG_EOF'
 # walcman configuration
@@ -77,6 +82,28 @@ CONFIG_EOF
     echo -e "${GREEN}Config file created${NC}"
 else
     echo -e "${GREEN}Config file exists${NC}"
+fi
+
+# Setup shell alias in ~/.zshrc
+echo "Configuring shell alias in $ZSHRC_FILE..."
+ALIAS_LINE="alias $ALIAS_NAME=\"$INSTALL_DIR/walcman\""
+
+if [ ! -f "$ZSHRC_FILE" ]; then
+    touch "$ZSHRC_FILE"
+fi
+
+if grep -q "alias $ALIAS_NAME=" "$ZSHRC_FILE"; then
+    if grep -Fxq "$ALIAS_LINE" "$ZSHRC_FILE"; then
+        echo "Alias already configured"
+    else
+        grep -v "alias $ALIAS_NAME=" "$ZSHRC_FILE" > "$ZSHRC_FILE.tmp"
+        echo "$ALIAS_LINE" >> "$ZSHRC_FILE.tmp"
+        mv "$ZSHRC_FILE.tmp" "$ZSHRC_FILE"
+        echo "Alias updated"
+    fi
+else
+    echo "$ALIAS_LINE" >> "$ZSHRC_FILE"
+    echo "Alias added"
 fi
 
 echo ""
