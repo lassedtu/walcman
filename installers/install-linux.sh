@@ -28,20 +28,7 @@ fi
 # Read current version
 CURRENT_VERSION=$(cat "$PROJECT_ROOT/VERSION" | tr -d '\n')
 
-# Check for existing installation (test this after installing)
-if [ -d "$INSTALL_DIR" ] && [ -f "$INSTALL_DIR/VERSION" ]; then
-    INSTALLED_VERSION=$(cat "$INSTALL_DIR/VERSION" | tr -d '\n')
-    echo "Found existing installation: v$INSTALLED_VERSION"
-    
-    if [ "$INSTALLED_VERSION" = "$CURRENT_VERSION" ]; then
-        echo -e "${YELLOW}Same version already installed. Reinstalling...${NC}"
-    else
-        echo -e "${GREEN}Upgrading from v$INSTALLED_VERSION to v$CURRENT_VERSION${NC}"
-    fi
-    echo ""
-else
-    echo "Installing version: $CURRENT_VERSION"
-fi
+echo "Installing version: $CURRENT_VERSION"
 
 # Build the project (fallback to makefile with fixed flags)
 echo "Building walcman..."
@@ -67,7 +54,6 @@ mkdir -p "$INSTALL_DIR"
 
 # Copy files to install directory
 cp "$PROJECT_ROOT/build/walcman" "$INSTALL_DIR/"
-cp "$PROJECT_ROOT/VERSION" "$INSTALL_DIR/"          # should this not be baked into the executable?
 
 # Make binary executable
 chmod +x "$INSTALL_DIR/walcman"
@@ -92,9 +78,6 @@ CONFIG_EOF
 else
     echo -e "${GREEN}Config file exists${NC}"
 fi
-echo ""
-
-
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
