@@ -61,7 +61,7 @@ if [ ! -f "$PROJECT_ROOT/build/walcman" ]; then
     exit 1
 fi
 
-echo -e "${GREEN}✓ Build successful${NC}"
+echo -e "${GREEN}Build successful${NC}"
 echo ""
 
 # Create installation directory
@@ -75,7 +75,7 @@ cp "$PROJECT_ROOT/VERSION" "$INSTALL_DIR/"
 # Make binary executable
 chmod +x "$INSTALL_DIR/walcman"
 
-echo -e "${GREEN}✓ Files installed${NC}"
+echo -e "${GREEN}Files installed${NC}"
 echo ""
 
 # Create config file with defaults if it doesn't exist
@@ -91,9 +91,9 @@ check_interval_hours=24
 # Options: red, green, yellow, blue, magenta, purple, pink, cyan, white, gray, orange
 ui_color=
 CONFIG_EOF
-    echo -e "${GREEN}✓ Config file created${NC}"
+    echo -e "${GREEN}Config file created${NC}"
 else
-    echo -e "${GREEN}✓ Config file exists${NC}"
+    echo -e "${GREEN}Config file exists${NC}"
 fi
 echo ""
 
@@ -113,7 +113,7 @@ fi
 if grep -q "alias $ALIAS_NAME=" "$ZSHRC_FILE"; then
     # Alias exists, check if it's the same
     if grep -Fxq "$ALIAS_LINE" "$ZSHRC_FILE"; then
-        echo -e "${GREEN}✓ Alias already configured correctly${NC}"
+        echo -e "${GREEN}Alias already configured correctly${NC}"
     else
         # Update the alias by removing old line and adding new one
         # Use a temporary file to avoid issues with in-place editing
@@ -122,14 +122,14 @@ if grep -q "alias $ALIAS_NAME=" "$ZSHRC_FILE"; then
         echo "# walcman alias" >> "$ZSHRC_FILE.tmp"
         echo "$ALIAS_LINE" >> "$ZSHRC_FILE.tmp"
         mv "$ZSHRC_FILE.tmp" "$ZSHRC_FILE"
-        echo -e "${GREEN}✓ Alias updated${NC}"
+        echo -e "${GREEN}Alias updated${NC}"
     fi
 else
     # Alias doesn't exist, add it
     echo "" >> "$ZSHRC_FILE"
     echo "# walcman alias" >> "$ZSHRC_FILE"
     echo "$ALIAS_LINE" >> "$ZSHRC_FILE"
-    echo -e "${GREEN}✓ Alias added${NC}"
+    echo -e "${GREEN}Alias added${NC}"
 fi
 
 echo ""
